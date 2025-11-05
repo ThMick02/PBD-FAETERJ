@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/11/2025 às 19:58
+-- Tempo de geração: 05/11/2025 às 20:23
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -32,6 +32,13 @@ CREATE TABLE `agendamentopacote` (
   `idAgendamento` int(11) NOT NULL,
   `idPacote` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `agendamentopacote`
+--
+
+INSERT INTO `agendamentopacote` (`idAgendamentoPacote`, `idAgendamento`, `idPacote`) VALUES
+(1, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -68,6 +75,13 @@ CREATE TABLE `agendamentoservico` (
   `idAgendamento` int(11) NOT NULL,
   `idServico` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `agendamentoservico`
+--
+
+INSERT INTO `agendamentoservico` (`idServicoAgendamentos`, `idAgendamento`, `idServico`) VALUES
+(1, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -127,6 +141,13 @@ CREATE TABLE `filaespera` (
   `status` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `filaespera`
+--
+
+INSERT INTO `filaespera` (`idFila`, `idCliente`, `idServico`, `dataHoraChegada`, `status`) VALUES
+(1, 1, 2, '2025-11-05 16:05:19', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -173,6 +194,14 @@ CREATE TABLE `pacoteservico` (
   `idPacote` int(11) NOT NULL,
   `idServico` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `pacoteservico`
+--
+
+INSERT INTO `pacoteservico` (`idPacoteServico`, `idPacote`, `idServico`) VALUES
+(1, 1, 3),
+(2, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -229,6 +258,14 @@ CREATE TABLE `profissionalespecialidade` (
   `idEspecialidade` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `profissionalespecialidade`
+--
+
+INSERT INTO `profissionalespecialidade` (`idProfissionalEspecialidade`, `idProfissional`, `idEspecialidade`) VALUES
+(1, 1, 2),
+(2, 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -240,6 +277,18 @@ CREATE TABLE `profissionalservico` (
   `idProfissional` int(11) NOT NULL,
   `idServico` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `profissionalservico`
+--
+
+INSERT INTO `profissionalservico` (`idProfissionalServico`, `idProfissional`, `idServico`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 2, 1),
+(4, 1, 1),
+(5, 1, 2),
+(6, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -261,7 +310,9 @@ CREATE TABLE `servicos` (
 
 INSERT INTO `servicos` (`idServico`, `nome`, `valor`, `duracao`, `descricao`) VALUES
 (1, 'Massagem Relaxante', 195.00, 60, 'Massagem com óleos essenciais para alívio de estresse.'),
-(2, 'Manicure e Pedicure', 75.00, 90, 'Tratamento completo de unhas, cutículas e esmaltação.');
+(2, 'Manicure e Pedicure', 75.00, 90, 'Tratamento completo de unhas, cutículas e esmaltação.'),
+(3, 'Limpeza de Pele Profunda', 150.00, 60, 'Extração e hidratação.'),
+(4, 'Peeling de Diamante', 220.00, 45, 'Renovação celular da pele.');
 
 --
 -- Índices para tabelas despejadas
@@ -377,7 +428,7 @@ ALTER TABLE `servicos`
 -- AUTO_INCREMENT de tabela `agendamentopacote`
 --
 ALTER TABLE `agendamentopacote`
-  MODIFY `idAgendamentoPacote` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idAgendamentoPacote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `agendamentos`
@@ -389,7 +440,7 @@ ALTER TABLE `agendamentos`
 -- AUTO_INCREMENT de tabela `agendamentoservico`
 --
 ALTER TABLE `agendamentoservico`
-  MODIFY `idServicoAgendamentos` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idServicoAgendamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `clientes`
@@ -407,7 +458,7 @@ ALTER TABLE `especialidades`
 -- AUTO_INCREMENT de tabela `filaespera`
 --
 ALTER TABLE `filaespera`
-  MODIFY `idFila` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFila` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `movimentocredito`
@@ -425,7 +476,7 @@ ALTER TABLE `pacote`
 -- AUTO_INCREMENT de tabela `pacoteservico`
 --
 ALTER TABLE `pacoteservico`
-  MODIFY `idPacoteServico` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPacoteServico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `pagamentos`
@@ -443,19 +494,19 @@ ALTER TABLE `profissionais`
 -- AUTO_INCREMENT de tabela `profissionalespecialidade`
 --
 ALTER TABLE `profissionalespecialidade`
-  MODIFY `idProfissionalEspecialidade` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProfissionalEspecialidade` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `profissionalservico`
 --
 ALTER TABLE `profissionalservico`
-  MODIFY `idProfissionalServico` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProfissionalServico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `servicos`
 --
 ALTER TABLE `servicos`
-  MODIFY `idServico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idServico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restrições para tabelas despejadas
