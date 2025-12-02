@@ -1,0 +1,7 @@
+Thiago Tavares Rodrigues
+
+Obs: Por causa da má compreensão do trabalho a ser apresentado semana passada, remodelei o projeto adicionando SQL de Criação das tabelas e CRUD para as funcionalidades do sistema.
+
+Organização: 
+Separei em duas pastas: criação de tabelas (create) e ações dentro do sistema (crud).
+Todas as ações terão um comentário acima explicando a funcionalidade que elas pertencem.
