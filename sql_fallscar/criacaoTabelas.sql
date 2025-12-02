@@ -77,7 +77,7 @@ CREATE TABLE motorista (
   Id int PRIMARY KEY AUTO_INCREMENT,
   Id_Funcionario int,
   Nome varchar(100),
-  Habilitacao varchar(20) NOT NULL
+  Habilitacao varchar(20) NOT NULL,
 
   FOREIGN KEY (Id_Funcionario) REFERENCES Funcionario (Id)
 );
@@ -124,7 +124,7 @@ CREATE TABLE locacao (
   FOREIGN KEY (Id_Seguro) REFERENCES seguro (Id),
   FOREIGN KEY (Id_Motorista) REFERENCES motorista (Id),
   FOREIGN KEY (Id_Loja_Retirada) REFERENCES loja (Id),
-  FOREIGN KEY (Id_Loja_Devolucao) REFERENCES loja (Id)
+  FOREIGN KEY (Id_Loja_Devolucao) REFERENCES loja (Id),
 
   CHECK (Periodo IN (7, 15, 30))
 );
