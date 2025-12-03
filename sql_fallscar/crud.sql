@@ -247,3 +247,27 @@ INNER JOIN cliente cli ON loc.Id_Cliente = cli.Id
 INNER JOIN loja l_ret ON loc.Id_Loja_Retirada = l_ret.Id
 LEFT JOIN loja l_dev ON loc.Id_Loja_Devolucao = l_dev.Id
 WHERE c.Id_Modelo = 2;
+
+-- BLOCO EXTRA: OBSERVAÇÃO PÓS AUTO-REVISÃO.
+
+-- Após testar os comandos, é perceptível o problema do DELETE, ele apaga o histórico, então ele geralmente é contornado por um UPDATE.
+-- No entanto, foi pedido durante as apresentações que a gente usasse todas as operações, então mantive o DELETE.
+-- Mas decidi colocar uma versão alternativa usando o UPDATE.
+
+-- VERSÃO ALTERNATIVA DO CARRO QUE FOI ROUBADO.
+-- Dessa vez, invés de deletar o carro, eu altero seu status (rastreando por sua placa) para "Roubado" e sua Loja_Atual para Null.
+UPDATE carro 
+SET Status = 'Roubado', Id_Loja_Atual = NULL 
+WHERE Placa = 'ABC1234';
+-- Após isso, eu crio o carro substituto e o coloco na mesma loja.
+INSERT INTO carro (Id_Modelo, Id_Loja_Atual, Placa, Ano_Fabricacao, Automatico, Preco, Status) VALUES 
+(1, 1, 'XYZ6789', '2025', 0, 125.00, 'Disponivel');
+
+-- VERSÃO ALTERNATIVA DE RICARDO MARCIANO SE APOSENTOU.
+-- Eu rastreio ele pelo nome do funcionario e depois altero sua funcao para 'Aposentado', em outros casos poderia ser 'afastado' ou 'demitido' por exemplo.
+UPDATE funcionario 
+SET Funcao = 'Aposentado' 
+WHERE Nome = 'Ricardo Marciano';
+-- Novamente, eu adiciono o nosso querido Paulo Galhanone como atendente substituto.
+INSERT INTO funcionario (Nome, CPF, Funcao, Ativo) VALUES 
+('Paulo Galhanone', '555.666.777-88', 'Atendente', 1);
