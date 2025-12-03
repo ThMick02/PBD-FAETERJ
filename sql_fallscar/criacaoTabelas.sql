@@ -112,9 +112,9 @@ CREATE TABLE locacao (
   Id_Loja_Devolucao int DEFAULT NULL,
   Data_Locacao datetime NOT NULL,
   Data_Devolucao datetime NOT NULL,
-  Periodo int NOT NULL,
+  Periodo tinyint(2) NOT NULL,
   Valor_Locacao decimal(10,2) NOT NULL,
-  motorista tinyint(1) DEFAULT 0,
+  motorista boolean DEFAULT 0,
   Canal varchar(15) NOT NULL,
   Status varchar(20) DEFAULT 'Em Andamento',
   
