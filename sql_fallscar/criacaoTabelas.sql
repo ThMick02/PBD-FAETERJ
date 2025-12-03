@@ -25,7 +25,7 @@ CREATE TABLE loja (
   Cidade varchar(30) NOT NULL,
   UF char(2) NOT NULL,
   Endereco varchar(100) DEFAULT NULL,
-  Disponivel tinyint(1) DEFAULT 1
+  Disponivel boolean DEFAULT 1
 );
 
 -- TABELA MODELO:
@@ -50,7 +50,7 @@ CREATE TABLE carro (
   Id_Loja_Atual int,
   Placa char(7) NOT NULL UNIQUE,
   Ano_Fabricacao char(4) DEFAULT NULL,
-  Automatico tinyint(1) DEFAULT 0,
+  Automatico boolean DEFAULT 0,
   Preco decimal(10,2) NOT NULL,
   Status varchar(15) DEFAULT 'Disponivel',
   
@@ -89,10 +89,10 @@ CREATE TABLE seguro (
   Id int PRIMARY KEY AUTO_INCREMENT,
   Plano varchar(50) NOT NULL,
   Valor_Plano decimal(10,2) NOT NULL,
-  Plano_Frota tinyint(1) DEFAULT 0,
-  Cobre_Furto tinyint(1) DEFAULT 0,
-  Cobre_Colisao tinyint(1) DEFAULT 0,
-  Cobre_Reserva tinyint(1) DEFAULT 0
+  Plano_Frota boolean DEFAULT 0,
+  Cobre_Furto boolean DEFAULT 0,
+  Cobre_Colisao boolean DEFAULT 0,
+  Cobre_Reserva boolean DEFAULT 0
 );
 
 -- TABELA LOCAÇÃO:
