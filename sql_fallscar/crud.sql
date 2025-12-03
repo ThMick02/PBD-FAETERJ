@@ -6,7 +6,7 @@
 -- Vou separar em blocos de funcionalidades (Cadastros, Movimentações, Atualizações e Visualiação).
 
 
--- BLOCO 1: Cadastros Básicos para preencher o Banco.
+-- █ █ █ █ BLOCO 1: Cadastros Básicos para preencher o Banco.
 
 -- CADASTRANDO LOJAS (Aeroporto Galeão, Centro e Aeroporto Congonhas)
 -- Nesse caso eu pesquisei 3 localizações da vida real mesmo e coloquei de exemplo pro sistema.
@@ -57,7 +57,7 @@ INSERT INTO seguro (Plano, Valor_Plano, Plano_Frota, Cobre_Furto, Cobre_Colisao,
 ('Seguro Premium', 150.00, 0, 1, 1, 1),
 ('Seguro Econômico', 50.00, 0, 0, 1, 0);
 
--- BLOCO 2: Movimentações de Locação, Pagamento e Pacote.
+-- █ █ █ █ BLOCO 2: Movimentações de Locação, Pagamento e Pacote.
 
 -- CADASTRANDO LOCAÇÃO ÚNICA (Apenas um carro para um Cliente Pessoa)
 -- A locação com o Id do Argo Drive de Placa ABC1234, para o Thiago Tavares, atendido por Marcio Belo, com seguro Premium, no Galeão, para levar agora e devolver daqui 7 dias.
@@ -90,5 +90,76 @@ INSERT INTO pacote (Id_Locacao, Id_Pagamento) VALUES
 -- Novamente os carros locados recebem o status de "Alugado" e seu Id_Loja_Atual se torna nulo até que eles sejam devolvidos.
 UPDATE carro SET Status = 'Alugado', Id_Loja_Atual = NULL WHERE Id IN (3, 4);
 
--- BLOCO 3: Atualiações do Banco de Dados.
+-- █ █ █ █ BLOCO 3: Atualiações do Banco de Dados.
 
+-- DEVOLUÇÃO LOCAÇÃO ÚNICA (Carro do Thiago Cliente Pessoa)
+-- Update que adiciona a loja que o carro foi devolvido e a data de devolução - Atribuindo o Status de Concluído a locação.
+UPDATE locacao 
+SET Id_Loja_Devolucao = 1, Data_Devolucao = NOW(), Status = 'Concluido' 
+WHERE Id = 1;
+-- Update do carro que foi locado, voltando a estar disponível e atualizando sua localização.
+UPDATE carro 
+SET Status = 'Disponivel', Id_Loja_Atual = 1 
+WHERE Id = 1;
+
+-- DEVOLUÇÃO FROTA (Carros de Silvian Cliente Empresa)
+-- Update novamente atribui a data e loja de devolução (Ambas na loja do centro) e concluindo ambas as locações.
+UPDATE locacao 
+SET Id_Loja_Devolucao = 3, Data_Devolucao = NOW(), Status = 'Concluido' 
+WHERE Id IN (2, 3);
+-- Juntamente, os carros recebem o status e a loja atual, igual ao do cliente único, fé.
+UPDATE carro 
+SET Status = 'Disponivel', Id_Loja_Atual = 3 
+WHERE Id IN (3, 4);
+
+-- ACIDENTE NO TRABALHO - CARRO DEVE SER ENVIADO A MANUTENÇÃO
+-- Carro é rastreado por sua placa e seu status é atribuído para "Manutenção."
+-- Além disso, seu Id_Loja_Atual é retirado para identificar que ele não se encontra em nenhuma loja atualmente.
+UPDATE carro
+SET Status = 'Manutencao', Id_Loja_Atual = NULL
+WHERE Placa = 'FAT9999';
+-- Depois de alguns dias, o carro sai da manutenção e é devolvido para a loja de origem.
+UPDATE carro
+SET Status = 'Disponível', Id_Loja_Atual = 3
+WHERE Placa = 'FAT9999';
+
+-- POR MOTIVOS DE INFLAÇÃO O FINANCEIRO DECIDIU AUMENTAR O VALOR DOS SEGUROS.
+-- Update simples que aumenta o valor em 10%.
+UPDATE seguro
+SET Valor_Plano = Valor_Plano * 1.10;
+
+-- CARRO FOI FURTADO - DELETANDO DO SISTEMA E REALOCANDO.
+-- Para que possa excluir o carro, primeiro desabilito o CHECK de Keys Estrangeiras temporariamente.
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM carro WHERE Placa = 'ABC1234';
+SET FOREIGN_KEY_CHECKS = 1;
+-- Após deletar o carro roubado, eu vou e crio um novo carro de mesmo modelo mas com uma nova placa.
+-- O preço é similar e características são similares ao carro perdido.
+INSERT INTO carro (Id_Modelo, Id_Loja_Atual, Placa, Ano_Fabricacao, Automatico, Preco, Status) VALUES 
+(1, 1, 'XYZ6789', '2025', 0, 125.00, 'Disponivel');
+
+-- EMPRESA DECIDIU ALTERAR SEU TELEFONE ADMNISTRATIVO, ALTERAR CADASTRO PARA CONTATO.
+-- Update simples, o número de telefone da Empresa Silvian é alterado.
+UPDATE cliente 
+SET Telefone = '(11) 97777-1234' 
+WHERE Id = 2;
+
+-- POR CAUSA DE CHUVAS FORTES E ESTRUTURA DE ESCOAMENTO RUIM DA REGIÃO, O LOJA DO AEROPORTO GALEÃO ESTÁ EM OBAS.
+-- Com a loja em obras, todos os carros presentes nela foram enviados para a unidade mais próxima.
+-- Assim todos os carros no Galeão são transferidos para o Aeroporto Congonhas.
+UPDATE carro 
+SET Id_Loja_Atual = 3 
+WHERE Id_Loja_Atual = 1;
+-- O marcador booleano de disponibilidade do Galeão é alterado pra falso.
+UPDATE loja SET Disponivel = 0 WHERE Id = 1;
+
+-- DEPOIS DE ANOS DE TRABALHO O ATENDENTE RICARDO MARCIANO SE APOSENTOU.
+-- Primeiro o deletamos do sistema e depois iremos adicionar um novo funcionário para a vaga.
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM funcionario WHERE Nome = 'Ricardo Marciano';
+SET FOREIGN_KEY_CHECKS = 1;
+-- O novo funcionário é adicionado, Paulo Galhanone.
+INSERT INTO funcionario (Nome, CPF, Funcao) VALUES 
+('Paulo Galhanone', '555.666.777-88', 'Atendente');
+
+-- █ █ █ █ BLOCO 4: Visualização das Tabelas.
