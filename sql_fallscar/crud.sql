@@ -163,3 +163,87 @@ INSERT INTO funcionario (Nome, CPF, Funcao) VALUES
 ('Paulo Galhanone', '555.666.777-88', 'Atendente');
 
 -- █ █ █ █ BLOCO 4: Visualização das Tabelas.
+
+-- VISUALIZAÇÃO DA FROTA.
+-- Usei o Select normalmente e depois utiliei o Join para interligar os Id.s, mostrando assim o Nome do Modelo no Modelo Id e a Localiação Atual.
+-- Alternativamente, dizendo que um carro possa estar fora da loja caso ele esteja em manutenção ou alugado.
+SELECT 
+    c.Placa, 
+    m.Nome AS Modelo, 
+    m.Categoria, 
+    c.Ano_Fabricacao, 
+    c.Status,
+    IFNULL(l.nome, '--- Fora da Loja ---') AS Localizacao_Atual
+FROM carro c
+INNER JOIN modelo m ON c.Id_Modelo = m.Id
+LEFT JOIN loja l ON c.Id_Loja_Atual = l.Id
+ORDER BY c.Status, m.Nome;
+
+-- VISUALIZAÇÃO DE FUNCIONÁRIOS E MOTORISTAS.
+-- Aqui é simples, tem um CASE que verifica se o Funcionário possui habilitação e mostra a função.
+-- Fora isso ele mostra tanto os funcionários quanto os não funcionários, os separando entre Motorista, Atendente ou Terceiro. (Usando o UNION ALL para interligar os SELECT)
+SELECT 
+    f.Nome AS Funcionario,
+    f.Funcao,
+    m.Habilitacao AS CNH_Motorista,
+    CASE 
+        WHEN m.Id IS NOT NULL THEN 'Sim' 
+        ELSE 'Não' 
+    END AS Habilitado_Dirigir
+FROM funcionario f
+LEFT JOIN motorista m ON m.Id_Funcionario = f.Id
+UNION ALL
+SELECT 
+    m.Nome AS Funcionario,
+    'Terceiro' AS Funcao,
+    m.Habilitacao,
+    'Sim'
+FROM motorista m
+WHERE m.Id_Funcionario IS NULL;
+
+-- VISUALIZAÇÃO DO HISTÓRICO DE LOCAÇÕES.
+-- Aqui ele mostra o histórico de locações, mostrando nome do cliente, modelo do carro, placa, status da locação.
+-- A parte mais dificil que eu tive que pesquisar um pouco para saber como colocar, foi mostrar as datas previstas ou de devolução.
+-- Pra isso eu criei um CASE que quando o Status estiver como Concluído, usará a data Devolução do dia, do contrário, não foi ainda e tem apenas a data prevista.
+SELECT 
+    cli.Nome AS Cliente,
+    m.Nome AS Carro,
+    c.Placa,
+    loc.Status AS Situacao,
+    loc.Data_Locacao AS Data_Inicio,
+    CASE 
+        WHEN loc.Status = 'Concluido' THEN loc.Data_Devolucao
+        ELSE DATE_ADD(loc.Data_Locacao, INTERVAL loc.Periodo DAY)
+    END AS Data_Devolução
+FROM locacao loc
+INNER JOIN cliente cli ON loc.Id_Cliente = cli.Id
+INNER JOIN carro c ON loc.Id_Carro = c.Id
+INNER JOIN modelo m ON c.Id_Modelo = m.Id
+ORDER BY loc.Data_Locacao DESC;
+
+-- GERAÇÃO DE RELATÓRIO FINANCEIRO.
+-- Para registro de pagamentos, com o intuito de calculos de lucro, sendo essas todas as informações presentes na tabela de pagamento.
+SELECT 
+    p.Id AS Cod_Pagamento,
+    p.Data_Pagamento,
+    p.Valor_Total,
+    p.Numero_Parcelas,
+    p.Status
+FROM pagamento p
+ORDER BY p.Data_Pagamento DESC;
+
+-- HISTÓRICO DOS CARROS POR MODELO.
+-- Aqui é simples, usa o Select com o Hoin para interligar informações da Locação com as informações do carro e gerar o histórico com base no Id do modelo.
+SELECT 
+    c.Placa,
+    cli.Nome AS Cliente_Locatario,
+    l_ret.nome AS Retirado_Em,
+    loc.Data_Locacao,
+    l_dev.nome AS Devolvido_Em,
+    loc.Data_Devolucao
+FROM locacao loc
+INNER JOIN carro c ON loc.Id_Carro = c.Id
+INNER JOIN cliente cli ON loc.Id_Cliente = cli.Id
+INNER JOIN loja l_ret ON loc.Id_Loja_Retirada = l_ret.Id
+LEFT JOIN loja l_dev ON loc.Id_Loja_Devolucao = l_dev.Id
+WHERE c.Id_Modelo = 2;
